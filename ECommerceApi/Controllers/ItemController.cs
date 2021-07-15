@@ -2,10 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ECommerceApi.Contracts;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ECommerceApi.Models;
+using ECommerceApi.Services;
 
 namespace ECommerceApi.Controllers
 {
@@ -13,61 +15,41 @@ namespace ECommerceApi.Controllers
     [ApiController]
     public class ItemController : ControllerBase
     {
-        private readonly ECommerceDbContext _context;
+        private readonly IItemService _itemService;
 
-        public ItemController(ECommerceDbContext context)
+        public ItemController(IItemService itemService)
         {
-            _context = context;
+            _itemService = itemService;
         }
 
         // GET: api/Item
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Item>>> GetItems()
+        public async Task<ActionResult<IEnumerable<ItemFull>>> GetItems(int pageNumber = 1, int pageSize = 50)
         {
-            return await _context.Items.ToListAsync();
+            return new(await _itemService.GetAllItems(pageNumber, pageSize));
         }
 
         // GET: api/Item/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Item>> GetItem(int id)
+        public async Task<ActionResult<ItemFull>> GetItem(int id)
         {
-            var item = await _context.Items.FindAsync(id);
-
+            var item = await _itemService.GetItemById(id);
             if (item == null)
-            {
                 return NotFound();
-            }
-
             return item;
         }
 
         // PUT: api/Item/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutItem(int id, Item item)
+        public async Task<IActionResult> PutItem(int id, ItemFull item)
         {
             if (id != item.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(item).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ItemExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+            await _itemService.EditItemById(id, item);
 
             return NoContent();
         }
@@ -75,33 +57,17 @@ namespace ECommerceApi.Controllers
         // POST: api/Item
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Item>> PostItem(Item item)
+        public async Task<ActionResult<ItemFull>> PostItem(ItemCreateRequest item)
         {
-            _context.Items.Add(item);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetItem", new { id = item.Id }, item);
+            return new(await _itemService.CreateItem(item));
         }
 
         // DELETE: api/Item/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteItem(int id)
         {
-            var item = await _context.Items.FindAsync(id);
-            if (item == null)
-            {
-                return NotFound();
-            }
-
-            _context.Items.Remove(item);
-            await _context.SaveChangesAsync();
-
+            await _itemService.DeleteItemById(id);
             return NoContent();
-        }
-
-        private bool ItemExists(int id)
-        {
-            return _context.Items.Any(e => e.Id == id);
         }
     }
 }
