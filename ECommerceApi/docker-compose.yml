@@ -1,0 +1,28 @@
+version: "3.9"
+
+services:
+  db:
+    platform: linux/x86_64
+    image: mysql:5.7
+    command: --init-file /initDb.sql
+    volumes:
+      - ./initDb.sql:/initDb.sql
+    restart: always
+    ports:
+      - "3300:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: ecommercedb
+
+  app:
+    depends_on:
+      - db
+    build: .
+    ports:
+      - "8000:80"
+    restart: always
+    environment:
+      PORT: 80
+      CLEARDB_CONNECTION_STRING: Server=db; Uid=root; Pwd=password; Database=ecommercedb
+volumes: 
+  initDb.sql:
