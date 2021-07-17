@@ -37,7 +37,7 @@ namespace ECommerceApi
             services.AddScoped<IItemService, ItemService>();
 
             services.AddDbContext<ECommerceDbContext>
-                (item => item.UseMySQL(Configuration.GetConnectionString("ECommerceDatabase")));
+                (item => item.UseMySQL(Environment.GetEnvironmentVariable("CLEARDB_CONNECTION_STRING")));
             
             services.AddControllers();
             services.AddSwaggerGen(c =>
