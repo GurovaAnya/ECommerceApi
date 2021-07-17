@@ -120,12 +120,22 @@ namespace ECommerceApi.Services
             return _mapper.Map<ItemFull>(itemEntity);;
         }
 
-        public async Task<IEnumerable<ItemFull>> GetAllItems(int pageNumber = 1, int pageSize = 50)
+        public async Task<IEnumerable<ItemFull>> GetAllItems(GetItemsRequest parameters)
         {
-            var items = await _context.Items
-                .Skip(pageNumber*pageSize)
-                .Take(pageSize)
-                .ToListAsync();
+            var query = _context.Items
+                    .Skip((parameters.PageNumber - 1) * parameters.PageSize)
+                    .Take(parameters.PageSize);
+
+            if (parameters.Type != null)
+                query = query.Where(x => x.Type == parameters.Type);
+            
+            if (parameters.PriceFrom != null)
+                query = query.Where(x => x.Price >= parameters.PriceFrom);
+            
+            if (parameters.PriceTo != null)
+                query = query.Where(x => x.Price <= parameters.PriceTo);
+            
+            var items = await query.ToListAsync();
 
             return _mapper.Map<IEnumerable<ItemFull>>(items);
         }

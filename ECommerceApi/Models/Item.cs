@@ -20,6 +20,6 @@ namespace ECommerceApi.Models
         public string Type { get; set; }
         
         [Column("price")]
-        public double Price { get; set; }
+        public decimal Price { get; set; }
     }
 }

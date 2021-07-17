@@ -24,9 +24,16 @@ namespace ECommerceApi.Controllers
 
         // GET: api/Item
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ItemFull>>> GetItems(int pageNumber = 1, int pageSize = 50)
+        public async Task<ActionResult<IEnumerable<ItemFull>>> GetItems(int pageNumber = 1, int pageSize = 50, string type = null, decimal? priceFrom = null, decimal? priceTo = null)
         {
-            return new(await _itemService.GetAllItems(pageNumber, pageSize));
+            return new(await _itemService.GetAllItems(new GetItemsRequest()
+            {
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                Type = type,
+                PriceFrom = priceFrom,
+                PriceTo = priceTo
+            }));
         }
 
         // GET: api/Item/5
@@ -34,6 +41,16 @@ namespace ECommerceApi.Controllers
         public async Task<ActionResult<ItemFull>> GetItem(int id)
         {
             var item = await _itemService.GetItemById(id);
+            if (item == null)
+                return NotFound();
+            return item;
+        }
+        
+        // GET: api/Item/sku/abc
+        [HttpGet("sku/{sku}")]
+        public async Task<ActionResult<ItemFull>> GetItem(string sku)
+        {
+            var item = await _itemService.GetItemBySku(sku);
             if (item == null)
                 return NotFound();
             return item;

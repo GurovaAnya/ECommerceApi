@@ -20,6 +20,6 @@ namespace ECommerceApi.Services
 
         Task<ItemFull> GetItemBySku(string sku);
 
-        Task<IEnumerable<ItemFull>> GetAllItems(int pageNumber = 1, int pageSize = 50);
+        Task<IEnumerable<ItemFull>> GetAllItems(GetItemsRequest parameters);
     }
 }
