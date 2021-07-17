@@ -31,7 +31,7 @@ namespace ECommerceApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddAutoMapper(typeof(Startup));
-            services.AddSingleton<IItemService, ItemService>();
+            services.AddScoped<IItemService, ItemService>();
 
             services.AddDbContext<ECommerceDbContext>
                 (item => item.UseMySQL(Configuration.GetConnectionString("ECommerceDatabase")));
