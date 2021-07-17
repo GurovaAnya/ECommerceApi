@@ -24,5 +24,5 @@ cd ECommerceApi
 ```
 2. Запустить docker compose
 ```
-docker compose up
+docker-compose up
 ```
