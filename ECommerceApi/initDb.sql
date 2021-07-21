@@ -18,3 +18,5 @@ INSERT INTO item (sku, name, type, price) VALUES ('AA/01/001', 'iPhone 14', 'Pho
 INSERT INTO item (sku, name, type, price) VALUES ('AA/01/002', 'Samsung Galaxy Note 50', 'Phone', 998);
 INSERT INTO item (sku, name, type, price) VALUES ('BB/29/324', 'iPad 10', 'Tablet', 1499);
 INSERT INTO item (sku, name, type, price) VALUES ('AB/93/485', 'miBand', 'Smart Watch', 9);
+
+COMMIT;
