@@ -34,3 +34,28 @@ cd ECommerceApi
 ```
 docker-compose up
 ```
+
+## GraphQl эндпоинт /graphql
+
+Получение списка товаров:
+```
+query{
+  items{
+    id
+    name
+    sku
+    ...
+  }
+}
+ ```
+ Получение товара по идентификатору:
+ ```
+ query{
+  item (id: "1"){
+    id
+    name
+    sku
+    ...
+  }
+}
+ ```
