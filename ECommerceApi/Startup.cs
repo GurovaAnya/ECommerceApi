@@ -5,8 +5,10 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using ECommerceApi.Contracts;
+using ECommerceApi.GraphQL.GraphQLSchema;
 using ECommerceApi.Models;
 using ECommerceApi.Services;
+using GraphQL.Server;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -47,6 +49,11 @@ namespace ECommerceApi
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 c.IncludeXmlComments(xmlPath);
             });
+            
+            services.AddScoped<AppSchema>();
+            services.AddGraphQL()
+                .AddSystemTextJson()
+                .AddGraphTypes(typeof(AppSchema), ServiceLifetime.Scoped);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -67,6 +74,10 @@ namespace ECommerceApi
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+            
+            app.UseGraphQL<AppSchema>();
+            app.UseGraphQLPlayground();
+
         }
 
         private static string XmlCommentsFilePath
