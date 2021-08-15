@@ -1,9 +1,13 @@
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using ECommerceApi.Contracts;
+using ECommerceApi.Contracts.GraphQL;
 using ECommerceApi.Models;
+using ECommerceApi.Utilities;
 using Microsoft.EntityFrameworkCore;
 
 namespace ECommerceApi.Services
@@ -108,6 +112,16 @@ namespace ECommerceApi.Services
             return _mapper.Map<ItemFull>(itemEntity);
         }
 
+        public async Task<ItemType> GetItemById(int id, List<string> fields)
+        {
+            var itemEntity = await _context
+                                                .Items
+                                                .Where(x => x.Id == id)
+                                                .Select(x=>Helpers.DynamicSelectGenerator<Item>(fields))
+                                                .FirstOrDefaultAsync();
+            return null;
+        }
+
         public async Task<ItemFull> GetItemBySku(string sku)
         {
             var itemEntity = await _context.Items.FirstOrDefaultAsync(x => x.Sku == sku);
@@ -122,9 +136,12 @@ namespace ECommerceApi.Services
 
         public async Task<IEnumerable<ItemFull>> GetAllItems(GetItemsRequest parameters)
         {
-            var query = _context.Items
-                    .Skip((parameters.PageNumber - 1) * parameters.PageSize)
-                    .Take(parameters.PageSize);
+            IQueryable<Item> query = _context.Items;
+
+            if (parameters.PageSize!=null && parameters.PageNumber != null)
+                query = query
+                    .Skip((parameters.PageNumber.Value - 1) * parameters.PageSize.Value)
+                    .Take(parameters.PageSize.Value);
 
             if (parameters.Type != null)
                 query = query.Where(x => x.Type == parameters.Type);

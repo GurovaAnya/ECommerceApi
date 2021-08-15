@@ -4,7 +4,7 @@ using GraphQL.Types;
 
 namespace ECommerceApi.Contracts.GraphQL
 {
-    public class ItemType: ObjectGraphType<Item>
+    public class ItemType: ObjectGraphType<ItemFull>
     {
         public ItemType()
         {
