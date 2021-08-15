@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using ECommerceApi.Contracts;
+using ECommerceApi.Contracts.GraphQL;
 
 namespace ECommerceApi.Services
 {
@@ -21,5 +22,6 @@ namespace ECommerceApi.Services
         Task<ItemFull> GetItemBySku(string sku);
 
         Task<IEnumerable<ItemFull>> GetAllItems(GetItemsRequest parameters);
+        Task<ItemType> GetItemById(int id, List<string> fielsNames);
     }
 }

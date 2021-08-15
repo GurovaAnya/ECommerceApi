@@ -23,6 +23,9 @@ namespace ECommerceApi.Contracts.GraphQL.Queries
                 arguments: new QueryArguments(new QueryArgument<NonNullGraphType<IdGraphType>> { Name = "id"}),
                 resolve: context =>
                 {
+                    var fieldsList = (List<Field>) context.FieldAst.SelectionSet.Children.GetPropertyValue(typeof(List<Field>));
+                    var fielsNames = fieldsList?.Select(x => x.Name).ToList();
+
                     var id = context.GetArgument<int>("id");
                     return service.GetItemById(id);
                 }
