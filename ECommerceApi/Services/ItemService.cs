@@ -112,16 +112,6 @@ namespace ECommerceApi.Services
             return _mapper.Map<ItemFull>(itemEntity);
         }
 
-        public async Task<ItemType> GetItemById(int id, List<string> fields)
-        {
-            var itemEntity = await _context
-                                                .Items
-                                                .Where(x => x.Id == id)
-                                                .Select(x=>Helpers.DynamicSelectGenerator<Item>(fields))
-                                                .FirstOrDefaultAsync();
-            return null;
-        }
-
         public async Task<ItemFull> GetItemBySku(string sku)
         {
             var itemEntity = await _context.Items.FirstOrDefaultAsync(x => x.Sku == sku);
