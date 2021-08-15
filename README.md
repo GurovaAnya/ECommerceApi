@@ -59,3 +59,5 @@ query{
   }
 }
  ```
+ 
+ Ссылка на playground: https://ayo-commerce-api.herokuapp.com/ui/playground
